@@ -1,0 +1,94 @@
+# Mac OS X hidden files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Vim swap files
+.*.sw?
+
+# PhpStorm
+.idea
+*.meta.*
+_ide_*
+*.iws
+
+# vs code
+.vscode
+*.code-workspace
+.history/
+.history
+.ionide
+
+# Sublime Text
+*.sublime-project
+
+# Node
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Distribution & Deploy
+/public/hot
+/public/storage
+/public/static
+/public/build
+/public/css
+/public/js
+/public/images
+/public/fonts
+/public/icons
+/public/vendor
+/public/mix-manifest.json
+/public/sitemap.xml
+/cgi-bin
+/.well-known
+.htaccess
+!/public/.htaccess
+error_log
+.ftpquota
+/storage/*.key
+/storage/media-library
+
+# Composer
+/vendor/
+
+# Environment
+.env*
+!.env.example*
+
+# PHPUnit & Pest
+.phpunit-watcher-cache.php
+.phpunit.result.cache
+
+# Docker
+docker-compose.override.yml
+
+# Homestead & Vagrant
+Homestead.json
+Homestead.yaml
+/.vagrant
+
+# Code style
+/tools/php-cs-fixer/vendor
+.php_cs.cache
+.editorconfig
+
+# Deploy scripts
+Envoy*
+envoy-*.blade.php
+
+doc/
+
+# Lock files
+#composer.lock
+#package-lock.json
+
+# Robots file
+robots.txt
+
+# This is result log for cron
+cron_result.log

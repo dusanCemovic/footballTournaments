@@ -28,6 +28,8 @@ Laravel application implementing Football Tournament where you can:
     - The length of the slot is specified by match_duration_minutes.
     - The first slots start at start_datetime.
     - A team may not play on two courts at the same time.
+    - Each round if with different teams
+    - If odd number, then one team need to wait
     - If the schedule already exists and any match contains a final result, re-generation is not allowed.
     - Endpoint:
         - POST /tournaments/{id}/schedule:generate

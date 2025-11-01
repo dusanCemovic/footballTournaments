@@ -19,7 +19,13 @@ class ScheduleController extends Controller
         }
 
         // Call the generator service
-        $generator->generateForTournament($tournament);
+        try {
+            $generator::generateForTournament($tournament);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => '(re)Schedule generation tournament false: ' . $th->getMessage(),
+            ]);
+        }
 
         return response()->json([
             'message' => '(re)Schedule generation tournament finished.'

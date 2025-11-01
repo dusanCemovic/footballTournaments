@@ -21,7 +21,6 @@ class TeamSeeder extends Seeder
             Team::factory()->count($teamCount)->create([
                 'tournament_id' => $tournament->id,
             ]);
-            // todo can create team with same name but not for same team EDGE CASE
         }
     }
 }

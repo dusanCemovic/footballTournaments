@@ -22,6 +22,7 @@ class FootballMatch extends Model
         'away_team_id',
         'court_number',
         'start_datetime',
+        'end_datetime',
         'home_goals',
         'away_goals',
         'is_final',
@@ -30,6 +31,7 @@ class FootballMatch extends Model
 
     protected $casts = [
         'start_datetime' => 'datetime',
+        'end_datetime' => 'datetime',
         'home_goals' => 'integer',
         'away_goals' => 'integer',
         'is_final' => 'boolean',

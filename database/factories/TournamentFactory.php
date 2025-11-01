@@ -16,7 +16,7 @@ class TournamentFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => $this->faker->unique()->catchPhrase() . ' Cup',
+            'name' => $this->faker->unique()->word() . ' Cup',
             'courts' => $this->faker->numberBetween(1, 4),
             'match_duration_minutes' => $this->faker->randomElement([20, 25, 30, 35, 40]),
             'start_datetime' => $this->faker->dateTimeBetween('+1 days', '+2 weeks'),

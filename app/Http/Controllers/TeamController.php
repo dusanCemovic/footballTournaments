@@ -41,7 +41,7 @@ class TeamController extends Controller
 
         // A team can only be deleted if there are no matches with results (final) yet on that tournament
         $hasFinalMatches = $team->matches()->where('is_final', true)->where('tournament_id', $tournament->id)->exists();
-        // TODO EDGE CASES we have problem that one team should be deleted from tournamnt, but we need to be sure that it is the same tournament. Team can have result on other tournament but of the selected one.
+        // TODO EDGE CASES deleting team that has final result
         if ($hasFinalMatches) {
             return response()->json(['message' => 'Team cannot be deleted because it has matches with final results.'], Response::HTTP_UNPROCESSABLE_ENTITY);
         }

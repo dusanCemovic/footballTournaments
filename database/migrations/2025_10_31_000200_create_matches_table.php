@@ -34,10 +34,6 @@ return new class extends Migration
             $table->index(['tournament_id', 'start_datetime']);
             $table->index(['home_team_id']);
             $table->index(['away_team_id']);
-
-            // Enforce no self-play at DB level when supported
-            // Note: Some DB drivers may ignore CHECK constraints.
-            $table->check('home_team_id <> away_team_id');
         });
     }
 

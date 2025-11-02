@@ -4,10 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Team;
 use App\Models\Tournament;
+use App\Services\ScheduleGeneratorService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Validation\Rule;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class TeamController extends Controller
 {
@@ -39,13 +39,22 @@ class TeamController extends Controller
         }
 
         // A team can only be deleted if there are no matches with results (final) yet on that tournament
-        $hasFinalMatches = $team->matches()->where('is_final', true)->where('tournament_id', $tournament->id)->exists();
-        // TODO EDGE CASES deleting team that has final result
+         $hasFinalMatches = $tournament->matches()->where('is_final', true)->exists();
+
+        // second hidden solution:  A team can only be deleted if there are no HIS matches with results (final) yet on that tournament
+        // $hasFinalMatches = $team->matches()->where('is_final', true)->where('tournament_id', $tournament->id)->exists();
+
         if ($hasFinalMatches) {
-            return response()->json(['message' => 'Team cannot be deleted because it has matches with final results.'], Response::HTTP_UNPROCESSABLE_ENTITY);
+            return response()->json(['message' => 'Team cannot be deleted because tournament has matches with final results.'], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         $team->delete();
+
+        // If tournament already has games created and team is deleted, we need to reschedule matches
+        $hasMatches = $tournament->matches()->exists();
+        if ($hasMatches) {
+            ScheduleGeneratorService::generateForTournament($tournament);
+        }
 
         return response()->json(['message' => 'Team deleted.']);
     }

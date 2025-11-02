@@ -43,14 +43,14 @@ The top-3 are covered by property-based tests (invariants). See README mapping f
 - Expected behavior: No team is scheduled more than once per round; with odd counts, each team has one round off across the tournament.
 - Ratings: I=Medium, L=Medium, D=Medium
 
-## Priority 7 — Regeneration blocked when any final result exists
+## Priority 7 — Team deleted on already created matches, but not final
+- Why important: Deleting team in same tournament that is already scheduled corrupt fixtures.
+- Expected behavior: After deletion, schedule should be regenerated within the tournament.
+- Ratings: I=Medium, L=Medium, D=Medium
+
+## Priority 8 — Regeneration blocked when any final result exists
 - Why important: Regenerating schedules with final results would invalidate historical outcomes.
 - Expected behavior: POST /tournaments/{id}/schedule:generate returns 422 if any match is_final=true.
-- Ratings: I=Medium, L=Medium, D=High
-
-## Priority 8 — Team name uniqueness within tournament
-- Why important: Duplicate team names in same tournament corrupt identity and fixtures.
-- Expected behavior: Validation fails (422) if a team name already exists within the tournament.
 - Ratings: I=Medium, L=Medium, D=High
 
 ## Priority 9 — Non-existent IDs via API return JSON 404

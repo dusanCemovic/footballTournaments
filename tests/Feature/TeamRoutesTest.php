@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\FootballMatch;
 use App\Models\Team;
 use App\Models\Tournament;
+use App\Services\ScheduleGeneratorService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Response;
 use Tests\TestCase;
@@ -12,6 +13,37 @@ use Tests\TestCase;
 class TeamRoutesTest extends TestCase
 {
     use RefreshDatabase;
+
+    public function test_reschedule_on_team_delete_when_no_finals_and_schedule_exists(): void
+    {
+        // Arrange: tournament with 4 teams and an existing schedule (no finals)
+        $tournament = Tournament::factory()->create([
+            'courts' => 2,
+            'match_duration_minutes' => 30,
+            'start_datetime' => now()->addDay(),
+        ]);
+
+        $teams = Team::factory()->count(4)->create([
+            'tournament_id' => $tournament->id,
+        ])->values();
+
+        // Generate initial schedule for 4 teams -> 4*3/2 = 6 matches
+        ScheduleGeneratorService::generateForTournament($tournament);
+        $this->assertSame(6, $tournament->matches()->count(), 'Precondition: 6 matches scheduled for 4 teams');
+
+        // Act: delete one team via API; since no finals exist, controller should allow deletion and reschedule
+        $toDelete = $teams[0];
+        $resp = $this->deleteJson("/api/tournaments/{$tournament->id}/teams/{$toDelete->id}");
+        $resp->assertOk()->assertJson(['message' => 'Team deleted.']);
+
+        // Assert: schedule is regenerated for remaining 3 teams -> 3*2/2 = 3 matches
+        $matches = $tournament->matches()->get();
+        $this->assertCount(3, $matches, 'After deletion, schedule should be regenerated for 3 teams');
+
+        // No match should reference the deleted team
+        $this->assertSame(0, $matches->where('home_team_id', $toDelete->id)->count());
+        $this->assertSame(0, $matches->where('away_team_id', $toDelete->id)->count());
+    }
 
     public function test_store_team_successfully(): void
     {
@@ -75,6 +107,7 @@ class TeamRoutesTest extends TestCase
         $tournament = Tournament::factory()->create();
         $teamA = Team::factory()->create(['tournament_id' => $tournament->id]);
         $teamB = Team::factory()->create(['tournament_id' => $tournament->id]);
+        $teamC = Team::factory()->create(['tournament_id' => $tournament->id]);
 
         // Create a final match involving teamA in the same tournament
         FootballMatch::create([
@@ -90,10 +123,10 @@ class TeamRoutesTest extends TestCase
             'unfinalize_count' => 0,
         ]);
 
-        $resp = $this->deleteJson("/api/tournaments/{$tournament->id}/teams/{$teamA->id}");
+        $resp = $this->deleteJson("/api/tournaments/{$tournament->id}/teams/{$teamC->id}");
 
         $resp->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
-            ->assertJson(['message' => 'Team cannot be deleted because it has matches with final results.']);
+            ->assertJson(['message' => 'Team cannot be deleted because tournament has matches with final results.']);
 
         $this->assertDatabaseHas('teams', ['id' => $teamA->id]);
     }

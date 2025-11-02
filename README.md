@@ -65,6 +65,13 @@ Laravel application implementing Football Tournament where you can:
     - Score unlocking - Only allowed once
     - Ranking - Calculated according to the rules above
 
+## Important notice:
+
+- Team can't be deleted if it's tournament has at least one finished result. In case that team can be deleted only if
+  team's game is not finished but some tournament game can be finished -> we will have to add additionally things like
+  automatic 3-0 results because reschedule is not allowed. (In this exam, we won't check team separately)
+- If some team is deleted after schedule is done, we will reschedule games.
+
 ## Edge cases and tests mapping
 
 Below is the mapping between prioritized edge cases (see EDGECASES.md) and the automated tests that cover them.
@@ -77,8 +84,8 @@ Below is the mapping between prioritized edge cases (see EDGECASES.md) and the a
 | P4       | Leaderboard tie-breaker stability              | tests/Unit/LeaderboardServiceTest.php (tie-breakers)                                                                        | Unit                 |
 | P5       | Round-robin completeness (N*(N-1)/2)           | tests/Feature/ScheduleGenerationTest.php::test_generate_creates_round_robin_schedule; tests/Unit/ScheduleInvariantsTest.php | Feature + Property   |
 | P6       | BYE handling for odd teams                     | tests/Unit/ScheduleInvariantsTest.php::test_schedule_invariants_property_based (random odd team counts)                     | Property             |
-| P7       | Regeneration blocked when any final exists     | tests/Feature/ScheduleGenerationTest.php::test_regeneration_blocked_if_any_match_is_final                                   | Feature              |
-| P8       | Team name uniqueness within tournament         | tests/Feature/TeamRoutesTest.php (duplicate name 422)                                                                       | Feature              |
+| P7       | Team deleted on already created matches        | tests/Feature/TeamRoutesTest.php::test_reschedule_on_team_delete_when_no_finals_and_schedule_exists                         | Feature              |
+| P8       | Regeneration blocked when any final exists     | tests/Feature/ScheduleGenerationTest.php::test_regeneration_blocked_if_any_match_is_final                                   | Feature              |
 | P9       | Non-existent IDs return JSON 404               | tests/Feature/TeamRoutesTest.php (nonexistent tournament 404)                                                               | Feature              |
 | P10      | Result immutability; single unfinalize allowed | tests/Feature/MatchRoutesTest.php (result entry and unfinalize scenarios)                                                   | Feature              |
 | P11      | Negative goals validation                      | tests/Feature/MatchRoutesTest.php (validation errors)                                                                       | Feature              |

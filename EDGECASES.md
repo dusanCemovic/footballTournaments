@@ -79,3 +79,6 @@ The top-3 are covered by property-based tests (invariants). See README mapping f
 - Why important: Assigning courts outside configured capacity causes operational conflicts.
 - Expected behavior: All scheduled matches have court_number between 1 and tournament.courts.
 - Ratings: I=Medium, L=Low, D=High
+
+Notes:
+- Priorities 1–3 are enforced via property/invariant tests.

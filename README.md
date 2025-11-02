@@ -1,10 +1,11 @@
 # Laravel Football Tournament
 
 Laravel application implementing Football Tournament where you can:
-- create tournament, 
-- insert/delete teams, 
-- schedule round-robin games, 
-- insert result for game, 
+
+- create tournament,
+- insert/delete teams,
+- schedule round-robin games,
+- insert result for game,
 - check standings
 
 # Rules:
@@ -63,3 +64,25 @@ Laravel application implementing Football Tournament where you can:
     - Input data checking - No negative values
     - Score unlocking - Only allowed once
     - Ranking - Calculated according to the rules above
+
+## Edge cases and tests mapping
+
+Below is the mapping between prioritized edge cases (see EDGECASES.md) and the automated tests that cover them.
+
+| Priority | Edge case (short)                              | Test(s)                                                                                                                     | Type                 |
+|----------|------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------|----------------------|
+| P1       | Schedule: no team overlap                      | tests/Unit/ScheduleInvariantsTest.php::test_schedule_invariants_property_based                                              | Property / Invariant |
+| P2       | Schedule: no court double-booking              | tests/Unit/ScheduleInvariantsTest.php::test_schedule_invariants_property_based                                              | Property / Invariant |
+| P3       | Leaderboard: points formula and dominance      | tests/Unit/LeaderboardInvariantsTest.php::test_leaderboard_points_and_dominance_invariants                                  | Property / Invariant |
+| P4       | Leaderboard tie-breaker stability              | tests/Unit/LeaderboardServiceTest.php (tie-breakers)                                                                        | Unit                 |
+| P5       | Round-robin completeness (N*(N-1)/2)           | tests/Feature/ScheduleGenerationTest.php::test_generate_creates_round_robin_schedule; tests/Unit/ScheduleInvariantsTest.php | Feature + Property   |
+| P6       | BYE handling for odd teams                     | tests/Unit/ScheduleInvariantsTest.php::test_schedule_invariants_property_based (random odd team counts)                     | Property             |
+| P7       | Regeneration blocked when any final exists     | tests/Feature/ScheduleGenerationTest.php::test_regeneration_blocked_if_any_match_is_final                                   | Feature              |
+| P8       | Team name uniqueness within tournament         | tests/Feature/TeamRoutesTest.php (duplicate name 422)                                                                       | Feature              |
+| P9       | Non-existent IDs return JSON 404               | tests/Feature/TeamRoutesTest.php (nonexistent tournament 404)                                                               | Feature              |
+| P10      | Result immutability; single unfinalize allowed | tests/Feature/MatchRoutesTest.php (result entry and unfinalize scenarios)                                                   | Feature              |
+| P11      | Negative goals validation                      | tests/Feature/MatchRoutesTest.php (validation errors)                                                                       | Feature              |
+| P12      | Team deletion blocked with final               | tests/Feature/TeamRoutesTest.php (delete team blocked 422)                                                                  | Feature              |
+| P13      | Courts within configured range                 | tests/Unit/ScheduleInvariantsTest.php::test_schedule_invariants_property_based                                              | Property             |
+
+See EDGECASES.md for details (title, rationale, expected behavior, and risk ratings) for each case.

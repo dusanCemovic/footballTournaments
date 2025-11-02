@@ -143,7 +143,6 @@ Below is an illustrative snapshot of how a real tournament (ID = 1) could look i
 
 Tip: To fetch real data from your instance, use:
 - GET /api/tournaments/1/leaderboard
-- Inspect matches via DB or list them from your UI. (If you expose an endpoint for listing matches, use that.)
 
 ### Matches (Tournament ID: 1)
 

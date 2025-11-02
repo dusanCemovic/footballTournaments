@@ -2,9 +2,7 @@
 
 namespace App\Services;
 
-use App\Models\FootballMatch;
 use App\Models\Tournament;
-use Illuminate\Support\Collection;
 
 final class LeaderboardService
 {
@@ -168,7 +166,7 @@ final class LeaderboardService
                 if ($aTs !== null && $bTs !== null && $aTs !== $bTs) {
                     return $aTs <=> $bTs; // earlier (smaller) first
                 }
-                // Fallback if they are the same (TODO EDGE CASE)
+                // Fallback if they are the same
                 return $a['team_id'] <=> $b['team_id'];
             })->values()->map(function ($row) {
                 unset($row['h2h_points_in_group'], $row['h2h']);

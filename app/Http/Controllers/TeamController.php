@@ -7,6 +7,7 @@ use App\Models\Tournament;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Validation\Rule;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class TeamController extends Controller
 {
@@ -19,8 +20,6 @@ class TeamController extends Controller
             'name' => [
                 'required', 'string', 'max:255',
                 Rule::unique('teams', 'name')->where(fn($q) => $q->where('tournament_id', $tournament->id)),
-                // todo when storing team, we should check if we have that team EDGE CASE
-                // todo check what if somebody insert same name all wrong tournament id
             ],
         ]);
 

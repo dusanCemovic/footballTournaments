@@ -74,9 +74,21 @@ class MatchRoutesTest extends TestCase
         $this->assertNull($match->away_goals);
         $this->assertSame(1, $match->unfinalize_count);
 
-        // Second unfinalize - should fail
+        // Second unfinalize when match is not final - should fail with non-final message
         $resp2 = $this->postJson("/api/matches/{$match->id}/unfinalize");
         $resp2->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
+            ->assertJson(['message' => 'Match is not final and cannot be unfinalized.']);
+
+        // Re-finalize the match by posting a new result
+        $resp3 = $this->postJson("/api/matches/{$match->id}/result", [
+            'home_goals' => 2,
+            'away_goals' => 2,
+        ]);
+        $resp3->assertOk();
+
+        // Third unfinalize attempt (after already unfinalized once previously) - should fail due to once-only rule
+        $resp4 = $this->postJson("/api/matches/{$match->id}/unfinalize");
+        $resp4->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
             ->assertJson(['message' => 'Match result can only be unfinalized once.']);
     }
 

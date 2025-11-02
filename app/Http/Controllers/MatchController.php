@@ -36,6 +36,11 @@ class MatchController extends Controller
      */
     public function unfinalize(FootballMatch $match)
     {
+        // Only final matches can be unfinalized
+        if (!$match->is_final) {
+            return response()->json(['message' => 'Match is not final and cannot be unfinalized.'], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
         if ($match->unfinalize_count >= 1) {
             return response()->json(['message' => 'Match result can only be unfinalized once.'], Response::HTTP_UNPROCESSABLE_ENTITY);
         }

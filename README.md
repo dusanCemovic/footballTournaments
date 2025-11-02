@@ -135,3 +135,45 @@ Below is the mapping between prioritized edge cases (see EDGECASES.md) and the a
 
 See EDGECASES.md for details (title, rationale, expected behavior, and risk ratings) for each case.
 + I added another one (to be 13) because I changed them while I was working and those 12 and 13 are similar, but both should be mentioned, so i didn't delete
+
+
+## Example of Tournament
+
+Below is an illustrative snapshot of how a real tournament (ID = 1) could look in this system after scheduling and entering final results. This is an example to guide understanding; your actual data will depend on what you create via the API/UI.
+
+Tip: To fetch real data from your instance, use:
+- GET /api/tournaments/1/leaderboard
+- Inspect matches via DB or list them from your UI. (If you expose an endpoint for listing matches, use that.)
+
+### Matches (Tournament ID: 1)
+
+Assume 4 teams (Lions, Bears, Tigers, Wolves), 2 courts, 30-minute matches starting at 2025-11-05 10:00 with a short round break.
+
+| ID | Court | Start               | End                 | Home   | Away   | Score | Final |
+|----|-------|---------------------|---------------------|--------|--------|-------|-------|
+| 1  | 1     | 2025-11-05 10:00    | 2025-11-05 10:30    | Lions  | Tigers | 2–1   | true  |
+| 2  | 2     | 2025-11-05 10:00    | 2025-11-05 10:30    | Bears  | Wolves | 1–0   | true  |
+| 3  | 1     | 2025-11-05 10:50    | 2025-11-05 11:20    | Lions  | Bears  | 1–1   | true  |
+| 4  | 2     | 2025-11-05 10:50    | 2025-11-05 11:20    | Tigers | Wolves | 2–2   | true  |
+| 5  | 1     | 2025-11-05 11:40    | 2025-11-05 12:10    | Wolves | Lions  | 0–3   | true  |
+| 6  | 2     | 2025-11-05 11:40    | 2025-11-05 12:10    | Tigers | Bears  | 0–2   | true  |
+
+Notes:
+- Schedule uses round-robin circle method; courts are assigned per wave and rounds are separated by a small break.
+- Times are examples; your schedule depends on start_datetime, match_duration_minutes, and courts.
+
+### Leaderboard (Tournament ID: 1)
+
+Computed from final matches only (Win=3, Draw=1, Loss=0; tie-breakers: H2H, GD, GF, avg start time).
+
+| Pos | Team   | P | W | D | L | GF | GA | GD | Pts |
+|-----|--------|---|---|---|---|----|----|----|-----|
+| 1   | Lions  | 3 | 2 | 1 | 0 |  6 |  2 | +4 |  7  |
+| 2   | Bears  | 3 | 2 | 1 | 0 |  4 |  1 | +3 |  7  |
+| 3   | Tigers | 3 | 0 | 1 | 2 |  3 |  6 | -3 |  1  |
+| 4   | Wolves | 3 | 0 | 1 | 2 |  2 |  6 | -4 |  1  |
+
+Explanation:
+- Lions and Bears tie on 7 points; their head-to-head is a draw, so goal difference (GD) decides: Lions (+4) rank above Bears (+3).
+- Tigers and Wolves tie on 1 point; GD decides Tigers (-3) above Wolves (-4).
+

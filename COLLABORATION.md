@@ -27,3 +27,4 @@
 ## Documentation
 - I wrote the Edge Cases and Design documents myself, then used AI to reformat and refine certain parts.
 - For example, I initially wrote the design document in Serbian and then translated it with AI. My goal was mostly to standardize the format; I could have done the translation myself as well.
+- Example at the end of the readme is added with AI from my database

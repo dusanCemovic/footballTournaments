@@ -8,6 +8,46 @@ Laravel application implementing Football Tournament where you can:
 - insert result for game,
 - check standings
 
+## Requirements
+
+- Used PHP v8.3.6 & Laravel 12.36.1 (i was working on it, so maybe less)
+- Mysql 8+
+- Composer
+
+1. Clone repo https://github.com/dusanCemovic/footballTournaments and go into folder `cd footballTournaments`
+2. Composer:
+   ```
+    composer install
+   ```
+3. COPY env example
+   ```
+    cp .env.example .env
+   ```
+4. Run generating key:
+   ```
+   php artisan key:generate
+   ```
+5. Create file for sqlite:
+   ```
+   touch database/database.sqlite
+   ```
+6. Run Migration:
+   ```
+   php artisan migrate:fresh --seed
+   ```
+   + If you wish to run seeder for populating results you may uncomment `FinishingMatchSeeder` in `DatabaseSeeder` or just use artisan command:
+     ```
+     php artisan db:seed --class=FinishingMatchSeeder
+     ```
+7. Start Server:
+    ```
+    php artisan serve
+    ```
+8. Run tests:
+    ```
+    php artisan test
+    ```    
+
 # Rules:
 
 - Tournament creation
@@ -32,6 +72,7 @@ Laravel application implementing Football Tournament where you can:
     - Each round if with different teams
     - If odd number, then one team need to wait
     - If the schedule already exists and any match contains a final result, re-generation is not allowed.
+    - Between round we have some pause (20minutes)
     - Endpoint:
         - POST /tournaments/{id}/schedule:generate
 - Result entry + unfinalization
@@ -93,3 +134,4 @@ Below is the mapping between prioritized edge cases (see EDGECASES.md) and the a
 | P13      | Courts within configured range                 | tests/Unit/ScheduleInvariantsTest.php::test_schedule_invariants_property_based                                              | Property             |
 
 See EDGECASES.md for details (title, rationale, expected behavior, and risk ratings) for each case.
++ I added another one (to be 13) because I changed them while I was working and those 12 and 13 are similar, but both should be mentioned, so i didn't delete
